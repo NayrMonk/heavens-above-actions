@@ -1,20 +1,27 @@
+const express = require('express');
+const path = require('path');
 const satellite = require("./src/satellite");
 const iridium = require("./src/iridium");
 
-var location = [39.9042, 116.4074, "%E5%8C%97%E4%BA%AC%E5%B8%82", 52, "ChST"];
-//COOKIE需要先通过浏览器调到中文
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-//const names = ["ISS", "IridiumFlares"];
-// https://www.heavens-above.com/PassSummary.aspx?satid=41765&lat=0&lng=0&loc=Unspecified&alt=0&tz=UCT
-
+// Run your satellite data fetching script once at startup
 satellite.getTable({
-	target: 25544,
-	pages: 4,
-	root: "./public/data/"
-}); //ISS
-/*
-iridium.getTable({
-	pages: 4,
-	root: "./public/data/"
+  target: 25544,
+  pages: 4,
+  root: "./public/data/"
 });
-*/
+
+// Serve static data files from /public
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Home route
+app.get('/', (req, res) => {
+  res.send('<h1>🚀 Heavens Above Actions Deployed Successfully!</h1><p>Satellite data is being generated.</p>');
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
