@@ -2,7 +2,7 @@ version: 2
 updates:
   # Monitor npm dependencies (Node.js project)
   - package-ecosystem: "npm"
-    directory: "/" # location of package.json
+    directory: "/"        # location of package.json
     schedule:
       interval: "weekly"  # can be daily, weekly, or monthly
       day: "monday"       # optional (for weekly schedule)
@@ -11,12 +11,12 @@ updates:
     commit-message:
       prefix: "chore(deps)"
     reviewers:
-      - your-github-username   # optional, adds you as reviewer on PRs
+      - your-github-username   # replace with your GitHub username
     labels:
       - "dependencies"
       - "auto-update"
 
-  # Optionally monitor GitHub Actions themselves
+  # Monitor GitHub Actions themselves
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
