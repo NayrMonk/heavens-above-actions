@@ -1,0 +1,49 @@
+name: Code Review Workflow
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  code-review:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set up Node.js for code analysis
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Run ESLint to check code style and quality
+      - name: Run ESLint
+        run: |
+          echo "🔍 Running ESLint for code style checks..."
+          npx eslint . || echo "⚠️ ESLint found issues"
+
+      # 5️⃣ Run security vulnerability scan using npm audit
+      - name: Run Security Audit
+        run: |
+          echo "🛡️ Running npm audit for vulnerabilities..."
+          npm audit --audit-level=moderate || echo "⚠️ Some vulnerabilities found"
+
+      # 6️⃣ Run tests to verify functionality before merging
+      - name: Run Tests
+        run: npm test
+
+      # 7️⃣ Upload lint and audit results as artifacts
+      - name: Upload Review Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-review-reports
+          path: |
+            eslint-report.txt
+            npm-audit-report.txt
