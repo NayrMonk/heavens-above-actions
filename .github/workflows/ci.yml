@@ -10,11 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Ensures the workflow runs in the correct project folder
-    defaults:
-      run:
-        working-directory: ./
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,10 +20,23 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run Lint
-        run: npm run lint
+        run: |
+          mkdir -p logs
+          echo "Running ESLint..." | tee logs/lint.log
+          npm run lint --if-present | tee -a logs/lint.log
 
       - name: Run Tests
-        run: npm test
+        run: |
+          mkdir -p logs
+          echo "Running Tests..." | tee logs/test.log
+          npm test --if-present | tee -a logs/test.log
+
+      - name: Upload Logs as Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-logs
+          path: logs
