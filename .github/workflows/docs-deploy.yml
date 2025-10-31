@@ -1,0 +1,41 @@
+name: Documentation Deployment
+
+# Trigger on pushes to main branch or docs folder changes
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    steps:
+      # 1️⃣ Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set up Node.js (optional, needed if using a static site generator)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # 3️⃣ Install dependencies (if using mkdocs or Docusaurus)
+      - name: Install dependencies
+        run: |
+          npm install
+
+      # 4️⃣ Build documentation (if using a static generator)
+      # Replace with mkdocs build if using mkdocs
+      - name: Build Documentation
+        run: |
+          echo "No build step needed if raw Markdown" 
+          # or: npx docusaurus build
+
+      # 5️⃣ Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
